@@ -1,0 +1,14 @@
+gen-*
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf
+*.bbl
+*.blg
+*.nav
+*.snm
+*.toc
+*.vrb
+!UoG_keyline.pdf
