@@ -44,7 +44,7 @@ gen-graph-$(1)-nodes-$(2)-$(3).pdf : graph-nodes-template.gnuplot
 endef
 
 $(foreach ps, 10 20 30, \
-    $(foreach f, non-induced induced, \
+    $(foreach f, non-induced, \
     $(eval $(call hardsip_GRAPH_template,$(f),$(ps),150,1,100))))
 
 $(foreach ps, 10 14 15 16 20, \

@@ -12,7 +12,7 @@ set logscale x
 set format x '$10^{%T}$'
 set yrange [0:14621]
 set ytics add ('$14621$' 14621) add ('' 14000)
-set key bottom right at 1e6, 250 Left invert
+set key off
 
 plot \
     "runtimes.data" u (cumx(vf2)):(cumy(vf2)) smooth cumulative w l ti 'VF2' at end ls 5, \

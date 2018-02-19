@@ -18,5 +18,6 @@ plot \
     "runtimes.data" u (cumx(randomrestarts)):(cumsaty(randomrestarts)) smooth cumulative w l ti 'Random + Restarts' at end ls 2, \
     "runtimes.data" u (cumx(softmax)):(cumsaty(softmax)) smooth cumulative w l ti '\raisebox{0.2cm}{Biased}' at end ls 6, \
     "runtimes.data" u (cumx(norestarts)):(cumsaty(norestarts)) smooth cumulative w l ti 'Degree' at end ls 1, \
-    "runtimes.data" u (cumx(random)):(cumsaty(random)) smooth cumulative w l ti 'Random' at end ls 4
+    "runtimes.data" u (cumx(random)):(cumsaty(random)) smooth cumulative w l ti 'Random' at end ls 4, \
+    "runtimes.data" u (cumx(anti)):(cumsaty(anti)) smooth cumulative w l ti 'Anti' at end ls 7
 

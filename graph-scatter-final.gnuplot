@@ -11,7 +11,7 @@ set logscale x
 set logscale y
 set format x '$10^{%T}$'
 set format y '$10^{%T}$'
-set key horiz rmargin maxcols 1 width -2 samplen 1
+set key horiz rmargin maxcols 1
 set size square
 
 plotfile="searchtimes.data"
