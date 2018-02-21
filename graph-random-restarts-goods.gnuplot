@@ -1,7 +1,7 @@
 # vim: set et ft=gnuplot sw=4 :
 
 set terminal tikz standalone color size 9.5cm,7.5cm font '\scriptsize' preamble '\usepackage{microtype}'
-set output "gen-graph-random-restarts.tex"
+set output "gen-graph-random-restarts-goods.tex"
 
 load "common.gnuplot"
 
@@ -14,8 +14,7 @@ set yrange [1500:2100]
 set key off
 
 plot \
-    "runtimes.data" u (cumx(randomrestarts)):(cumsaty(randomrestarts)) smooth cumulative w l ti '\raisebox{1.2mm}{Random, nogoods}' at end ls 2, \
-    "runtimes.data" u (cumx(randomrestartsgoods)):(cumsaty(randomrestartsgoods)) smooth cumulative w l ti '\raisebox{-1.2mm}{Random, restarts}' at end ls 3, \
+    "runtimes.data" u (cumx(randomrestartsgoods)):(cumsaty(randomrestartsgoods)) smooth cumulative w l ti 'Random, restarts' at end ls 3, \
     "runtimes.data" u (cumx(norestarts)):(cumsaty(norestarts)) smooth cumulative w l ti 'Degree' at end ls 1, \
     "runtimes.data" u (cumx(random)):(cumsaty(random)) smooth cumulative w l ti 'Random' at end ls 4, \
     "runtimes.data" u (cumx(anti)):(cumsaty(anti)) smooth cumulative w l ti 'Anti' at end ls 7

@@ -1,12 +1,12 @@
 # vim: set et ft=gnuplot sw=4 :
 
-set terminal tikz standalone color size 9cm,6.5cm font '\scriptsize' preamble '\usepackage{microtype}'
+set terminal tikz standalone color size 9.5cm,7.5cm font '\scriptsize' preamble '\usepackage{microtype}'
 set output "gen-graph-scatter-final.tex"
 
 load "common.gnuplot"
 
 set xlabel "Degree Search Time (ms)"
-set ylabel "Biased + Restarts Search Time (ms)"
+set ylabel "Biased, Nogoods Search Time (ms)"
 set logscale x
 set logscale y
 set format x '$10^{%T}$'

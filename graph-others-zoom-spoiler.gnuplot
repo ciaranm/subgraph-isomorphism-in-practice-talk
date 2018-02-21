@@ -1,7 +1,7 @@
 # vim: set et ft=gnuplot sw=4 :
 
 set terminal tikz standalone color size 9.5cm,7.5cm font '\scriptsize' preamble '\usepackage{microtype}'
-set output "gen-graph-others-zoom.tex"
+set output "gen-graph-others-zoom-spoiler.tex"
 
 load "common.gnuplot"
 
@@ -16,6 +16,7 @@ set key off
 
 plot \
     "runtimes.data" u (cumx(norestarts)):(cumsaty(norestarts)) smooth cumulative w l ti 'Ours' at end ls 1, \
+    "runtimes.data" u (cumx(final)):(cumsaty(final)) smooth cumulative w l ti 'This talk' at end ls 5, \
     "runtimes.data" u (cumx(pathlad)):(cumsaty(pathlad)) smooth cumulative w l ti 'PathLAD' at end ls 6, \
     "runtimes.data" u (cumx(vf2)):(cumsaty(vf2)) smooth cumulative w l ti 'VF2' at end ls 8
 

@@ -300,7 +300,8 @@ Prosser and \\ James Trimble}
 \begin{frame}{Is It Any Good?}
 
     \includegraphics<1>{gen-graph-others.pdf}%
-    \includegraphics<2>{gen-graph-others-zoom.pdf}
+    \includegraphics<2>{gen-graph-others-zoom.pdf}%
+    \includegraphics<3>{gen-graph-others-zoom-spoiler.pdf}
 
 \end{frame}
 
@@ -406,6 +407,7 @@ Prosser and \\ James Trimble}
 
 \begin{frame}{Restarts}
 
+    \only<1>{
     \begin{itemize}
         \item Run search for a bit, and if we don't find a solution, restart.
         \item Count number of backtracks, restart using the Luby sequence (with a magic constant
@@ -414,12 +416,19 @@ Prosser and \\ James Trimble}
                 \item 1, 1, 2, 1, 1, 2, 4, 1, 1, 2, 1, 1, 2, 4, 8, \ldots
             \end{itemize}
         \item Obviously, something needs to change when we restart.
+            \begin{itemize}
+                \item First attempt: random value-ordering heuristic.
+            \end{itemize}
     \end{itemize}
+    }%
+    \includegraphics<2>{gen-graph-random-restarts-goods.pdf}%
+    \includegraphics<3>{gen-graph-scatter-random-goods.pdf}
 
 \end{frame}
 
 \begin{frame}{Nogoods}
 
+    \only<1>{
     \begin{itemize}
         \item Whenever we restart, post new constraints eliminating parts of the search space
             already explored.
@@ -436,13 +445,9 @@ Prosser and \\ James Trimble}
                 \item Either find a new literal to watch, or propagate.
             \end{itemize}
     \end{itemize}
-
-\end{frame}
-
-\begin{frame}{Random Value-Ordering with Restarts}
-
-    \includegraphics<1>{gen-graph-random-restarts.pdf}%
-    \includegraphics<2>{gen-graph-scatter-random.pdf}
+}%
+    \includegraphics<2>{gen-graph-random-restarts.pdf}%
+    \includegraphics<3>{gen-graph-scatter-random.pdf}
 
 \end{frame}
 
@@ -460,7 +465,7 @@ Prosser and \\ James Trimble}
 
 \end{frame}
 
-\begin{frame}{Biased Value-Ordering with Restarts}
+\begin{frame}{Biased Value-Ordering with Restarts and Nogoods}
 
     \includegraphics<1>{gen-graph-restarts.pdf}%
     \includegraphics<2>{gen-graph-scatter-final.pdf}

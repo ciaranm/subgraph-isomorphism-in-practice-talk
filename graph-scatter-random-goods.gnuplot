@@ -1,12 +1,12 @@
 # vim: set et ft=gnuplot sw=4 :
 
 set terminal tikz standalone color size 9.5cm,7.5cm font '\scriptsize' preamble '\usepackage{microtype}'
-set output "gen-graph-scatter-random.tex"
+set output "gen-graph-scatter-random-goods.tex"
 
 load "common.gnuplot"
 
 set xlabel "Degree Search Time (ms)"
-set ylabel "Random, Nogoods Search Time (ms)"
+set ylabel "Random + Restarts Search Time (ms)"
 set logscale x
 set logscale y
 set format x '$10^{%T}$'
@@ -18,7 +18,7 @@ plotfile="searchtimes.data"
 satcol="sat"
 famcol="family"
 xcol=norestarts
-ycol=randomrestarts
+ycol=randomrestartsgoods
 
 load "scatter.gnuplot"
 

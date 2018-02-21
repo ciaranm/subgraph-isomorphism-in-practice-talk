@@ -6,11 +6,15 @@ TABLES =
 GRAPHS = \
 	 gen-graph-others.pdf \
 	 gen-graph-others-zoom.pdf \
+	 gen-graph-others-zoom-spoiler.pdf \
 	 gen-graph-value-ordering-heuristics.pdf \
 	 gen-graph-value-ordering-heuristics-unsat.pdf \
 	 gen-graph-scatter-dds.pdf \
+	 gen-graph-random-restarts-goods.pdf \
 	 gen-graph-random-restarts.pdf \
+	 gen-graph-random-restarts-goods-unsat.pdf \
 	 gen-graph-scatter-random.pdf \
+	 gen-graph-scatter-random-goods.pdf \
 	 gen-graph-value-ordering-heuristics-biased.pdf \
 	 gen-graph-restarts.pdf \
 	 gen-graph-scatter-final.pdf \
