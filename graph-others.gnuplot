@@ -1,6 +1,6 @@
 # vim: set et ft=gnuplot sw=4 :
 
-set terminal tikz standalone color size 9.5cm,7.5cm font '\scriptsize' preamble '\usepackage{microtype}'
+set terminal tikz standalone color size 9.5cm,6.5cm font '\scriptsize' preamble '\usepackage{microtype}'
 set output "gen-graph-others.tex"
 
 load "common.gnuplot"
@@ -16,6 +16,9 @@ set key off
 
 plot \
     "runtimes.data" u (cumx(vf2)):(cumy(vf2)) smooth cumulative w l ti 'VF2' at end ls 8, \
-    "runtimes.data" u (cumx(pathlad)):(cumy(pathlad)) smooth cumulative w l ti '\raisebox{-0.15cm}{PathLAD}' at end ls 6, \
-    "runtimes.data" u (cumx(norestarts)):(cumy(norestarts)) smooth cumulative w l ti '\raisebox{0.15cm}{Ours}' at end ls 1
+    "runtimes.data" u (cumx(pathlad)):(cumy(pathlad)) smooth cumulative w l ti '\raisebox{-0.05cm}{PathLAD}' at end ls 6, \
+    "runtimes.data" u (cumx(norestarts)):(cumy(norestarts)) smooth cumulative w l ti '\raisebox{0.20cm}{Glasgow}' at end ls 1, \
+    "runtimes.data" u (cumx(final)):(cumy(final)) smooth cumulative w l notitle ls 5, \
+    "runtimespar.data" u (cumx(7)):(cumy(7)) smooth cumulative w l notitle ls 2, \
+    "runtimes.data" u (cumx(18)):(cumy(18)) smooth cumulative w l notitle ls 3
 

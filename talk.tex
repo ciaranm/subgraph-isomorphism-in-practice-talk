@@ -279,7 +279,7 @@ Prosser and \\ James Trimble}
 \begin{frame}{Benchmark Instances}
 
     \begin{itemize}
-        \item Other papers: a subset of 5,725 instances from Christine Solnon's selection:
+        \item 14,621 instances from Christine Solnon's collection:
             \begin{itemize}
                 \item Randomly generated with different models.
                 \item Real-world graphs.
@@ -287,7 +287,7 @@ Prosser and \\ James Trimble}
                 \item Biochemistry problems.
                 \item Phase transition instances.
             \end{itemize}
-        \item Here: all 14,621 instances:
+        \item At least\ldots
             \begin{itemize}
                 \item $\ge 2,110$ satisfiable.
                 \item $\ge 12,322$ unsatisfiable.
@@ -300,8 +300,7 @@ Prosser and \\ James Trimble}
 \begin{frame}{Is It Any Good?}
 
     \includegraphics<1>{gen-graph-others.pdf}%
-    \includegraphics<2>{gen-graph-others-zoom.pdf}%
-    \includegraphics<3>{gen-graph-others-zoom-spoiler.pdf}
+    \includegraphics<2>{gen-graph-others-zoom-spoiler-all.pdf}
 
 \end{frame}
 
@@ -309,10 +308,14 @@ Prosser and \\ James Trimble}
     \begin{itemize}
         \item Variable ordering: smallest domain first, tie-breaking on highest degree.
         \item Value ordering: highest degree to lowest.
-            \begin{itemize}
-                \item The main focus of this talk.
-            \end{itemize}
     \end{itemize}
+\end{frame}
+
+\begin{frame}{Sanity Check}
+
+    \includegraphics<1>{gen-graph-value-ordering-heuristics.pdf}%
+    \includegraphics<2>{gen-graph-value-ordering-heuristics-unsat.pdf}%
+
 \end{frame}
 
 \begin{frame}{Hand-Wavy Theoretical Justification}
@@ -373,36 +376,6 @@ Prosser and \\ James Trimble}
             \\
         };
     \end{tikzpicture}
-\end{frame}
-
-\begin{frame}{More on Value-Ordering Heuristics}
-    \begin{itemize}
-        \item Highest degree first.
-        \item But degree spread is usually quite low\ldots
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Sanity Check}
-
-    \includegraphics<1>{gen-graph-value-ordering-heuristics.pdf}%
-    \includegraphics<2>{gen-graph-value-ordering-heuristics-unsat.pdf}%
-
-\end{frame}
-
-\begin{frame}{Discrepancy Search}
-
-    \only<1>{
-        \begin{itemize}
-            \item Going against a value-ordering heuristic is called a \emph{discrepancy}.
-            \item Conjecture 1: the total number of discrepancies to find a solution is usually quite low.
-            \item Conjecture 2: early value choices are most likely to be incorrect.
-            \item Definite fact: early mistakes are exponentially more expensive than later
-                mistakes.
-            \item Discrepancy searches offset this, at the cost of introducing overheads.
-        \end{itemize}
-    }%
-    \includegraphics<2>{gen-graph-scatter-dds.pdf}
-
 \end{frame}
 
 \begin{frame}{Restarts}
@@ -475,9 +448,9 @@ Prosser and \\ James Trimble}
 \begin{frame}{Ongoing Work}
 
     \begin{itemize}
-        \item This works well for maximum common subgraph too.
-        \item What about CP in general?
-        \item Parallel!
+        \item Is this more broadly applicable?
+        \item Larger scale parallelism.
+        \item Subgraphs modulo theories.
     \end{itemize}
 
 \end{frame}

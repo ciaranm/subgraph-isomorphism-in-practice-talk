@@ -17,4 +17,5 @@ plot \
     "runtimes.data" u (cumx(norestarts)):(cumsaty(norestarts)) smooth cumulative w l ti 'Degree' at end ls 1, \
     "runtimes.data" u (cumx(random)):(cumsaty(random)) smooth cumulative w l ti 'Random' at end ls 4, \
     "runtimes.data" u (cumx(anti)):(cumsaty(anti)) smooth cumulative w l ti 'Anti' at end ls 7, \
+    "runtimes.data" u (cumx(final)):(cumsaty(final)) smooth cumulative w l ti 'Degree + Magic' at end ls 5
 
