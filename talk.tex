@@ -308,13 +308,6 @@ Prosser and \\ James Trimble}
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Sanity Check}
-
-    \includegraphics<1>{gen-graph-value-ordering-heuristics.pdf}%
-    \includegraphics<2>{gen-graph-value-ordering-heuristics-unsat.pdf}%
-
-\end{frame}
-
 \begin{frame}{Hand-Wavy Theoretical Justification}
     \begin{itemize}
         \item Maximise the expected number of solutions during search?
@@ -327,6 +320,13 @@ Prosser and \\ James Trimble}
         \item High target degree leaves as many vertices as possible available for future
             use, making $u$ larger.
     \end{itemize}
+\end{frame}
+
+\begin{frame}{Sanity Check}
+
+    \includegraphics<1>{gen-graph-value-ordering-heuristics.pdf}%
+    \includegraphics<2>{gen-graph-value-ordering-heuristics-unsat.pdf}%
+
 \end{frame}
 
 \begin{frame}{Phase Transitions}
@@ -446,8 +446,10 @@ Prosser and \\ James Trimble}
 
     \begin{itemize}
         \item Is this form of search more broadly applicable?
+        \item Specialisations, like clique, and generalisations, like maximum common subgraph.
         \item Parallelism.
         \item Subgraphs modulo theories.
+        \item Algorithm engineering.
     \end{itemize}
 
 \end{frame}

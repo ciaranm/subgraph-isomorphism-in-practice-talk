@@ -15,6 +15,5 @@ set key off
 plot \
     "runtimes.data" u (cumx(norestarts)):(cumunsaty(norestarts)) smooth cumulative w l ti 'All' at end ls 1, \
     "runtimes.data" u (cumx(random)):(cumunsaty(random)) smooth cumulative w l notitle ls 4 dt (2,3), \
-    "runtimes.data" u (cumx(anti)):(cumunsaty(anti)) smooth cumulative w l notitle ls 7 dt (1,3), \
-    "runtimes.data" u (cumx(final)):(cumunsaty(final)) smooth cumulative w l notitle ls 5 dt (1,6)
+    "runtimes.data" u (cumx(anti)):(cumunsaty(anti)) smooth cumulative w l notitle ls 7 dt (1,3)
 

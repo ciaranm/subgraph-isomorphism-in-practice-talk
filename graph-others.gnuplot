@@ -17,7 +17,5 @@ set key off
 plot \
     "runtimes.data" u (cumx(vf2)):(cumy(vf2)) smooth cumulative w l ti 'VF2' at end ls 8, \
     "runtimes.data" u (cumx(pathlad)):(cumy(pathlad)) smooth cumulative w l ti '\raisebox{-0.05cm}{PathLAD}' at end ls 6, \
-    "runtimes.data" u (cumx(norestarts)):(cumy(norestarts)) smooth cumulative w l ti '\raisebox{0.20cm}{Glasgow}' at end ls 1, \
-    "runtimes.data" u (cumx(final)):(cumy(final)) smooth cumulative w l notitle ls 5, \
-    "runtimes.data" u (cumx(18)):(cumy(18)) smooth cumulative w l notitle ls 3
+    "runtimes.data" u (cumx(final)):(cumy(final)) smooth cumulative w l ti '\raisebox{0.20cm}{Glasgow}' at end ls 5
 
