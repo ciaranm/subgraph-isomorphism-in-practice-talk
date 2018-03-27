@@ -245,21 +245,18 @@ Prosser and \\ James Trimble}
     \begin{itemize}
         \item Recursively build up a mapping from vertices of the pattern graph to vertices of the
             target graph.
-    \end{itemize}
-
-\end{frame}
-
-\begin{frame}{In Constraint Programming Terms\ldots}
-    \begin{itemize}
-        \item Forward-checking recursive search.
-        \item A variable for every pattern vertex.
-        \item Initially, each domain contains every target vertex.
-        \item After guessed assignments, infeasible values are eliminated from domains.
+        \item In constraint programming terms:
             \begin{itemize}
-                \item All-different constraint.
-                \item Adjacency constraints.
+                \item Forward-checking recursive search.
+                \item A variable for every pattern vertex.
+                \item Initially, each domain contains every target vertex.
+                \item After guessed assignments, infeasible values are eliminated from domains.
+                    \begin{itemize}
+                        \item All-different constraint.
+                        \item Adjacency constraints.
+                    \end{itemize}
+                \item If we get a wipeout, we backtrack.
             \end{itemize}
-        \item If we get a wipeout, we backtrack.
     \end{itemize}
 \end{frame}
 
@@ -448,8 +445,8 @@ Prosser and \\ James Trimble}
 \begin{frame}{Ongoing Work}
 
     \begin{itemize}
-        \item Is this more broadly applicable?
-        \item Larger scale parallelism.
+        \item Is this form of search more broadly applicable?
+        \item Parallelism.
         \item Subgraphs modulo theories.
     \end{itemize}
 

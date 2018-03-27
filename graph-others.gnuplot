@@ -19,6 +19,5 @@ plot \
     "runtimes.data" u (cumx(pathlad)):(cumy(pathlad)) smooth cumulative w l ti '\raisebox{-0.05cm}{PathLAD}' at end ls 6, \
     "runtimes.data" u (cumx(norestarts)):(cumy(norestarts)) smooth cumulative w l ti '\raisebox{0.20cm}{Glasgow}' at end ls 1, \
     "runtimes.data" u (cumx(final)):(cumy(final)) smooth cumulative w l notitle ls 5, \
-    "runtimespar.data" u (cumx(7)):(cumy(7)) smooth cumulative w l notitle ls 2, \
     "runtimes.data" u (cumx(18)):(cumy(18)) smooth cumulative w l notitle ls 3
 
