@@ -8,6 +8,7 @@ set style line  6 lt 1 lw 2 lc rgb '#ffb948' # pumpkin
 set style line  7 lt 1 lw 2 lc rgb '#b30c00' # pillarbox
 set style line  8 lt 1 lw 2 lc rgb '#be4d00' # rust
 set style line  9 lt 1 lw 2 lc rgb '#b06c96' # rose
+set style line 10 lt 1 lw 2 lc rgb '#ffdc36' # sunshine
 
 # palette
 set palette defined (\
@@ -19,4 +20,5 @@ set palette defined (\
 5 '#ffb948',\
 6 '#b30c00',\
 7 '#be4d00',\
-8 '#b06c96')
+8 '#b06c96',\
+9 '#ffdc36')

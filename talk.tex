@@ -303,8 +303,8 @@ Prosser and \\ James Trimble}
 
 \begin{frame}{Search Order}
     \begin{itemize}
-        \item Variable ordering: smallest domain first, tie-breaking on highest degree.
-        \item Value ordering: highest degree to lowest.
+        \item Variable ordering (i.e.\ pattern vertices): smallest domain first, tie-breaking on highest degree.
+        \item Value ordering (i.e.\ target vertices): highest degree to lowest.
     \end{itemize}
 \end{frame}
 
@@ -373,6 +373,13 @@ Prosser and \\ James Trimble}
             \\
         };
     \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{However\ldots}
+    \begin{itemize}
+        \item Degree spread is low.
+        \item We commit extremely heavily to the first branching choice, which is probably wrong.
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{Restarts}

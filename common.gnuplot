@@ -41,5 +41,6 @@ kdownbiasedrestarts="sequentialixinducedrestarts14"
 glasgow2="glasgow2"
 glasgow3="glasgow3"
 pathlad="pathlad"
+lad="lad"
 vf2="vf2"
 
