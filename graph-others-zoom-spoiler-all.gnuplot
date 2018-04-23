@@ -18,7 +18,7 @@ set key off
 plot \
     "runtimes.data" u (cumx(norestarts)):(cumy(norestarts)) smooth cumulative w l ti '\raisebox{0.15cm}{LION 2016 (a)}' at end ls 1, \
     "runtimespar.data" u (cumx(9)):(cumy(9)) smooth cumulative w l ti '{$\overset{\text{\scriptsize Somewhere Exotic}}{\text{\scriptsize (not yet written)~~}}$}' at end ls 2, \
-    "runtimes.data" u (cumx(final)):(cumy(final)) smooth cumulative w l ti '\raisebox{-0.1cm}{$\overset{\text{\scriptsize IJCAI 2018\hspace*{2.6em}}}{\text{\scriptsize (not yet rejected)}}$}' at end ls 5, \
+    "runtimes.data" u (cumx(final)):(cumy(final)) smooth cumulative w l ti '\raisebox{-0.1cm}{$\overset{\text{\scriptsize ESA 2018\hspace*{3.2em}}}{\text{\scriptsize (not yet rejected)}}$}' at end ls 5, \
     "runtimes.data" u (cumx(pathlad)):(cumy(pathlad)) smooth cumulative w l ti 'LION 2016 (b)' at end ls 6, \
     "runtimes.data" u (cumx(vf2)):(cumy(vf2)) smooth cumulative w l ti 'VF2' at end ls 8, \
     "runtimes.data" u (cumx(18)):(cumy(18)) smooth cumulative w l ti '\raisebox{-0.15cm}{CP 2015}' at end ls 3, \
