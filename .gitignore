@@ -10,5 +10,5 @@ gen-*
 *.nav
 *.snm
 *.toc
-*.vrb
 !UoG_keyline.pdf
+!UStA_Logo_SP.eps

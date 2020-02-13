@@ -8,10 +8,9 @@ set tics textcolor rgb "black"
 set label textcolor rgb "black"
 
 outputfile="gen-graph-" . format . "-satisfiable-" . ps . "-" . ts . ".tex"
-proportionsat="" . format . "-" . ps . "-" . ts . "-satisfiable.plot"
-predictedline="ps" . ps . "-ts" . ts . "." . format . ".predicted-line.plot"
+proportionsat="data/" . format . "-" . ps . "-" . ts . "-satisfiable.plot"
 
-set terminal tikz standalone color size 2.3cm,2.3cm font '\tiny'
+set terminal tikz standalone color size 2.3cm,2.3cm font '\tiny' preamble '\usepackage{microtype}\RequirePackage[tt=false, type1=true]{libertine}\RequirePackage[varqu]{zi4}\RequirePackage[libertine]{newtxmath}\RequirePackage[T1]{fontenc}'
 
 load "chromadiverge.pal"
 
@@ -32,14 +31,4 @@ set size square
 
 unset colorbox
 
-if (satlines == 0) { \
-    plot proportionsat u ($1/divide):($2/divide):($3) matrix w image notitle \
-} else { if (satlines == 1) { \
-    plot proportionsat u ($1/divide):($2/divide):($3) matrix w image notitle, \
-        predictedline u 1:2 w line notitle lc "black" \
-} else { \
-    plot proportionsat u ($1/divide):($2/divide):($3) matrix w image notitle, \
-        predictedline u 1:2 w line notitle lc "black", \
-        predictedline u 4:5 w line notitle lc "black" \
-} }
-
+plot proportionsat u ($1/divide):($2/divide):($3) matrix w image notitle

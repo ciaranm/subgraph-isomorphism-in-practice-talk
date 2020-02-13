@@ -4,28 +4,36 @@ all : tables graphs
 TABLES =
 
 GRAPHS = \
-	 gen-graph-others.pdf \
-	 gen-graph-others-zoom.pdf \
-	 gen-graph-others-zoom-spoiler.pdf \
-	 gen-graph-others-zoom-spoiler-all.pdf \
-	 gen-graph-value-ordering-heuristics.pdf \
-	 gen-graph-value-ordering-heuristics-unsat.pdf \
-	 gen-graph-scatter-dds.pdf \
-	 gen-graph-random-restarts-goods.pdf \
-	 gen-graph-random-restarts.pdf \
-	 gen-graph-random-restarts-goods-unsat.pdf \
-	 gen-graph-scatter-random.pdf \
-	 gen-graph-scatter-random-goods.pdf \
-	 gen-graph-value-ordering-heuristics-biased.pdf \
-	 gen-graph-restarts.pdf \
-	 gen-graph-scatter-final.pdf \
-	 gen-graph-scatter-biased.pdf \
+	gen-graph-value-ordering.pdf \
+	gen-graph-value-ordering-unsat.pdf \
+	gen-graph-value-ordering-dds.pdf \
+	gen-graph-value-ordering-dds-unsat.pdf \
+	gen-graph-value-ordering-dds-scatter.pdf \
+	gen-graph-sbs.pdf \
+	gen-graph-sbs-unsat.pdf \
+	gen-graph-sbs-scatter.pdf \
+	gen-graph-par.pdf \
+	gen-graph-par-scatter.pdf \
+	gen-graph-dist.pdf \
+	gen-graph-bias-scatter.pdf \
+	gen-graph-others.pdf \
+	gen-graph-rsr.pdf \
+	gen-graph-rsr-scatter.pdf \
+	gen-graph-phase-transition.pdf \
+	gen-graph-waves.pdf \
+	gen-graph-biiiig-data-aids.pdf \
+	gen-graph-biiiig-data-pcms.pdf \
+	gen-graph-biiiig-data-pdbs.pdf \
+	gen-graph-biiiig-data-ppigo.pdf \
+	gen-graph-others.pdf \
 	 $(foreach ps, 10 20 30, \
 		 gen-graph-non-induced-satisfiable-$(ps)-150.pdf \
-		 gen-graph-non-induced-nodes-$(ps)-150.pdf ) \
-	$(foreach ps, 10 14 15 16 20, \
-		 gen-graph-induced-satisfiable-$(ps)-150.pdf \
-		 gen-graph-induced-nodes-$(ps)-150.pdf )
+		 gen-graph-non-induced-nodes-$(ps)-150.pdf \
+		 gen-graph-vf2-non-induced-nodes-$(ps)-150.pdf )  \
+	$(foreach l, 2 3 5 20, \
+		 gen-graph-non-induced-satisfiable-20-l$(l)-150.pdf \
+		 gen-graph-vf2-non-induced-nodes-20-l$(l)-150.pdf \
+		 gen-graph-non-induced-nodes-20-l$(l)-150.pdf ) \
 
 tables : $(TABLES)
 
@@ -49,10 +57,21 @@ gen-graph-$(1)-nodes-$(2)-$(3).pdf : graph-nodes-template.gnuplot
 endef
 
 $(foreach ps, 10 20 30, \
-    $(foreach f, non-induced, \
+    $(foreach f, non-induced vf2-non-induced, \
     $(eval $(call hardsip_GRAPH_template,$(f),$(ps),150,1,100))))
 
-$(foreach ps, 10 14 15 16 20, \
-    $(foreach f, induced, \
-    $(eval $(call hardsip_GRAPH_template,$(f),$(ps),150,2,100))))
+define hardsip_LGRAPH_template =
+gen-graph-$(1)-satisfiable-$(2)-l$(3)-$(4).pdf : graph-lsatisfiable-template.gnuplot
+	gnuplot -e "ps=$(2)" -e "ts=$(4)" -e "l=$(3)" -e "format='$(1)'" -e "satlines=$(5)" -e "divide=$(6)" `basename $$<` && \
+	latexmk -pdf gen-graph-$(1)-satisfiable-$(2)-l$(3)-$(4)
+
+gen-graph-$(1)-nodes-$(2)-l$(3)-$(4).pdf : graph-lnodes-template.gnuplot
+	gnuplot -e "ps=$(2)" -e "ts=$(4)" -e "l=$(3)" -e "format='$(1)'" -e "plotsize='$(5)'" -e "divide=$(6)" `basename $$<` && \
+	latexmk -pdf gen-graph-$(1)-nodes-$(2)-l$(3)-$(4)
+endef
+
+$(foreach l, 2 3 5 20, \
+    $(foreach f, non-induced vf2-non-induced, \
+    $(eval $(call hardsip_LGRAPH_template,$(f),20,$(l),150,2,100))))
+
 

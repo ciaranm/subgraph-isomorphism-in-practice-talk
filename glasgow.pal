@@ -10,6 +10,8 @@ set style line  8 lt 1 lw 2 lc rgb '#be4d00' # rust
 set style line  9 lt 1 lw 2 lc rgb '#b06c96' # rose
 set style line 10 lt 1 lw 2 lc rgb '#ffdc36' # sunshine
 
+set style line 101 lc rgb '#a0a0a0' lw 1 dt '.'
+
 # palette
 set palette defined (\
 0 '#003866',\

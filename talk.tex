@@ -10,10 +10,15 @@
 \usepackage{amsmath}                   % \operatorname
 \usepackage{amsfonts}                  % \mathcal
 \usepackage{amssymb}                   % \nexists
-\usepackage{gnuplot-lua-tikz}          % graphs
 \usepackage[vlined]{algorithm2e} % algorithms
 \usepackage{centernot}
-\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{csquotes}
+
+\RequirePackage[tt=false, type1=true]{libertine}
+\RequirePackage[varqu]{zi4}
+\RequirePackage[libertine]{newtxmath}
+\RequirePackage[T1]{fontenc}
 
 \usetikzlibrary{shapes, arrows, shadows, calc, positioning, fit}
 \usetikzlibrary{decorations.pathreplacing, decorations.pathmorphing, shapes.misc}
@@ -72,18 +77,20 @@
     \begin{tikzpicture}[remember picture, overlay]
         \node at (current page.north west) {
             \begin{tikzpicture}[remember picture, overlay]
-                \fill [fill=uofguniversityblue, anchor=north west] (0, 0) rectangle (\paperwidth, -2.6cm);
+                \fill [fill=uofguniversityblue, anchor=north west] (0, 0) rectangle (\paperwidth, -3.0cm);
             \end{tikzpicture}
         };
 
-        \node (logo) [anchor=north east, shift={(-0.6cm,-0.6cm)}] at (current page.north east) {
+        \node (logo) [anchor=north east, shift={(-0.6cm,-0.8cm)}] at (current page.north east) {
             \includegraphics[keepaspectratio=true,scale=0.7]{UoG_keyline.pdf}
         };
 
         \node [anchor=west, xshift=0.2cm] at (current page.west |- logo.west) {
-            \begin{minipage}{0.65\paperwidth}\raggedright
+            \begin{minipage}{0.60\paperwidth}\raggedright
                 {\usebeamerfont{title}\usebeamercolor[white]{}\inserttitle}\\[0.1cm]
-                {\usebeamerfont{author}\usebeamercolor[white]{}\insertauthor}
+                {\usebeamerfont{author}\usebeamercolor[white]{}\insertauthor}\\[0.1cm]
+                {\usebeamerfont{author}\scriptsize\usebeamercolor[white]{}with Blair Archibald, Fraser
+                Dunlop, Stephan Gocht, Ruth Hoffmann, Jakob Nordstr\"{o}m, Patrick Prosser, Christine Solnon and James Trimble}
             \end{minipage}
         };
     \end{tikzpicture}
@@ -160,60 +167,95 @@
 }
 \makeatother
 
+\makeatletter
+\newenvironment{justborderframe}[2][]{
+    \def\beamer@entrycode{\vspace*{-\headheight}}
+    \setbeamertemplate{headline}
+    {%
+        \begin{beamercolorbox}[colsep=1.5pt]{upper separation line head}
+        \end{beamercolorbox}
+        \begin{beamercolorbox}[ht=0.5ex,dp=0.125ex,%
+            leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[ht=0.5ex,dp=0.125ex,%
+            leftskip=.3cm,rightskip=.3cm plus1fil]{author in head/foot}%
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[colsep=1.5pt]{lower separation line head}
+        \end{beamercolorbox}
+        \vspace*{\headheight}
+    }
+
+    \setbeamertemplate{footline}
+    {%
+        \begin{beamercolorbox}[colsep=1.5pt]{upper separation line foot}
+        \end{beamercolorbox}
+        \begin{beamercolorbox}[ht=0.5ex,dp=0.125ex,%
+            leftskip=.3cm,rightskip=.3cm plus1fil]{author in head/foot}%
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[ht=0.5ex,dp=0.125ex,%
+            leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[colsep=1.5pt]{lower separation line foot}
+        \end{beamercolorbox}
+    }
+
+    \begin{frame}[#1]{}
+    }{
+    \end{frame}
+}
+\makeatother
+
+
 % }}}
 
-\title[Subgraph Isomorphism in Practice]{Subgraph Isomorphism in Practice}
-\author[Ciaran McCreesh, Patrick Prosser and James Trimble]{\textbf{Ciaran McCreesh}, Patrick
-Prosser and \\ James Trimble}
+\author{Ciaran McCreesh}
+\title{Subgraph Isomorphism in Practice}
 
 \begin{document}
 
 {
     \usebackgroundtemplate{
         \tikz[overlay, remember picture]
-        \node[at=(current page.south), anchor=south, inner sep=0pt]{\includegraphics[keepaspectratio=true, width=\paperwidth]{background.jpg}};
+        \node[at=(current page.south), anchor=south, inner sep=0pt]{\includegraphics[keepaspectratio=true, height=\paperheight]{background.jpg}};
     }
     \begin{frame}[plain,noframenumbering]
         \titlepage
     \end{frame}
 }
 
-\begin{frame}{Non-Induced Subgraph Isomorphism}
+\section{Subgraph Problems}
 
-    \begin{center}\begin{tikzpicture}
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (Na) at (1,  0) {1};
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (Nb) at (1, -1.5) {2};
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (Nc) at (0, -3) {3};
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (Nd) at (2, -3) {4};
+\begin{frame}{Subgraph Isomorphism}
+    \centering
+    \begin{tikzpicture}
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (Na) at (1,  0) {\vphantom{1}};
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (Nb) at (1, -1.5) {\vphantom{1}};
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (Nc) at (0, -3) {\vphantom{1}};
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (Nd) at (2, -3) {\vphantom{1}};
 
-        \node <2> [draw, circle, fill=uofgcobalt, inner sep=4pt, font=\bfseries] (Na) at (1,  0) {1};
-        \node <2> [draw, circle, fill=uofgpumpkin, inner sep=4pt, font=\bfseries] (Nb) at (1, -1.5) {2};
-        \node <2> [draw, circle, fill=uofglawn, inner sep=4pt, font=\bfseries] (Nc) at (0, -3) {3};
-        \node <2> [draw, circle, fill=uofgthistle, inner sep=4pt, font=\bfseries] (Nd) at (2, -3) {4};
+        \node <2> [draw, circle, fill=uofgcobalt, inner sep=4pt, font=\bfseries] (Na) at (1,  0) {\vphantom{1}};
+        \node <2> [draw, circle, fill=uofgpumpkin, inner sep=4pt, font=\bfseries] (Nb) at (1, -1.5) {\vphantom{1}};
+        \node <2> [draw, circle, fill=uofglawn, inner sep=4pt, font=\bfseries] (Nc) at (0, -3) {\vphantom{1}};
+        \node <2> [draw, circle, fill=uofgthistle, inner sep=4pt, font=\bfseries] (Nd) at (2, -3) {\vphantom{1}};
 
-        \draw <1> [thick, color=uofgsandstone!50] (Na) -- (Nb);
-        \draw <1> [thick, color=uofgsandstone!50] (Nb) -- (Nc);
-        \draw <1> [thick, color=uofgsandstone!50] (Nc) -- (Nd);
-        \draw <1> [thick, color=uofgsandstone!50] (Nb) -- (Nd);
+        \draw [ultra thick] (Na) -- (Nb);
+        \draw [ultra thick] (Nb) -- (Nc);
+        \draw [ultra thick] (Nc) -- (Nd);
+        \draw [ultra thick] (Nb) -- (Nd);
 
-        \draw <2> [ultra thick] (Na) -- (Nb);
-        \draw <2> [ultra thick] (Nb) -- (Nc);
-        \draw <2> [ultra thick] (Nc) -- (Nd);
-        \draw <2> [ultra thick] (Nb) -- (Nd);
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N1) at (5.5,  0) {\vphantom{1}};
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N2) at (7.5,  0) {\vphantom{1}};
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N3) at (5.5, -1.5) {\vphantom{1}};
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N4) at (7.5, -1.5) {\vphantom{1}};
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N5) at (5.5, -3) {\vphantom{1}};
+        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N6) at (7.5, -3) {\vphantom{1}};
 
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N1) at (5.5,  0) {1};
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N2) at (7.5,  0) {2};
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N3) at (5.5, -1.5) {3};
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N4) at (7.5, -1.5) {4};
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N5) at (5.5, -3) {5};
-        \node <1> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N6) at (7.5, -3) {6};
-
-        \node <2> [draw, circle, fill=uofgcobalt, inner sep=4pt, font=\bfseries] (N1) at (5.5,  0) {1};
-        \node <2> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N2) at (7.5,  0) {2};
-        \node <2> [draw, circle, fill=uofgpumpkin, inner sep=4pt, font=\bfseries] (N3) at (5.5, -1.5) {3};
-        \node <2> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N4) at (7.5, -1.5) {4};
-        \node <2> [draw, circle, fill=uofglawn, inner sep=4pt, font=\bfseries] (N5) at (5.5, -3) {5};
-        \node <2> [draw, circle, fill=uofgthistle, inner sep=4pt, font=\bfseries] (N6) at (7.5, -3) {6};
+        \node <2> [draw, circle, fill=uofgcobalt, inner sep=4pt, font=\bfseries] (N1) at (5.5,  0) {\vphantom{1}};
+        \node <2> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N2) at (7.5,  0) {\vphantom{1}};
+        \node <2> [draw, circle, fill=uofgpumpkin, inner sep=4pt, font=\bfseries] (N3) at (5.5, -1.5) {\vphantom{1}};
+        \node <2> [draw, circle, fill=white, inner sep=4pt, font=\bfseries] (N4) at (7.5, -1.5) {\vphantom{1}};
+        \node <2> [draw, circle, fill=uofglawn, inner sep=4pt, font=\bfseries] (N5) at (5.5, -3) {\vphantom{1}};
+        \node <2> [draw, circle, fill=uofgthistle, inner sep=4pt, font=\bfseries] (N6) at (7.5, -3) {\vphantom{1}};
 
         \draw <1> [thick, color=uofgsandstone!50] (N1) -- (N2);
         \draw <1> [thick, color=uofgsandstone!50] (N1) -- (N3);
@@ -223,7 +265,6 @@ Prosser and \\ James Trimble}
         \draw <1> [thick, color=uofgsandstone!50] (N3) -- (N6);
         \draw <1> [thick, color=uofgsandstone!50] (N4) -- (N6);
         \draw <1> [thick, color=uofgsandstone!50] (N5) -- (N6);
-        \draw <1> [thick, color=uofgsandstone!50] (N2) to [in=45, out=315] (N6);
         \draw <1> [thick, color=uofgsandstone!50] (N1) to [in=135, out=225] (N5);
 
         \draw <2> [thick, color=uofgsandstone!50] (N1) -- (N2);
@@ -234,47 +275,221 @@ Prosser and \\ James Trimble}
         \draw <2> [ultra thick] (N3) -- (N6);
         \draw <2> [thick, color=uofgsandstone!50] (N4) -- (N6);
         \draw <2> [ultra thick] (N5) -- (N6);
-        \draw <2> [thick, color=uofgsandstone!50] (N2) to [in=45, out=315] (N6);
         \draw <2> [thick, color=uofgsandstone!50] (N1) to [in=135, out=225] (N5);
-    \end{tikzpicture}\end{center}
 
+        \draw <2> [thick, dashed, color=uofgcobalt, arrows=->] (Na) to (N1);
+        \draw <2> [thick, dashed, color=uofgpumpkin, arrows=->] (Nb) to (N3);
+        \draw <2> [thick, dashed, color=uofglawn, arrows=->] (Nc) to [out=20, in=160] (N5);
+        \draw <2> [thick, dashed, color=uofgthistle, arrows=->] (Nd) to [out=20, in=160] (N6);
+    \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{The Algorithm}
+\begin{frame}{Maximum Common Induced Subgraph}
+    \centering
+    \begin{tikzpicture}
+        \begin{scope}
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M1) at (90:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M2) at (150:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M3) at (30:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M4) at (210:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M5) at (330:1.5) {\phantom{0}};
+            \node[draw, circle, draw=uofgsandstone!60, fill=white, inner sep=2pt, font=\normalsize] (M6) at (270:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M7) at ($(210:1.5) + (M6)$) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M8) at ($(330:1.5) + (M6)$) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M9) at ($(270:1.5) + (M6)$) {\phantom{0}};
 
+            \draw [very thick] (M1) -- (M2);
+            \draw [very thick] (M2) -- (M4);
+            \draw [very thick] (M3) -- (M5);
+            \draw [color=uofgsandstone!60] (M4) -- (M6);
+            \draw [color=uofgsandstone!60] (M5) -- (M6);
+            \draw [very thick] (M3) -- (M1);
+            \draw [color=uofgsandstone!60] (M6) -- (M7);
+            \draw [color=uofgsandstone!60] (M6) -- (M8);
+            \draw [color=uofgsandstone!60] (M6) -- (M9);
+            \draw [very thick] (M7) -- (M9);
+            \draw [very thick] (M8) -- (M9);
+        \end{scope}
+
+        \begin{scope}[xshift=6cm]
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M1) at (90:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M2) at (150:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M3) at (30:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M4) at (210:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M5) at (330:1.5) {\phantom{0}};
+            \node[draw, circle, draw=uofgsandstone!60, fill=white, inner sep=2pt, font=\normalsize] (M6) at (270:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M7) at ($(210:1.5) + (M6)$) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M8) at ($(270:1.5) + (M6)$) {\phantom{0}};
+            \node[draw, circle, fill=uofgcobalt, inner sep=2pt, font=\normalsize] (M9) at ($(330:1.5) + (M8)$) {\phantom{0}};
+
+            \draw [very thick] (M1) -- (M2);
+            \draw [very thick] (M2) -- (M4);
+            \draw [very thick] (M3) -- (M5);
+            \draw [color=uofgsandstone!60] (M4) -- (M6);
+            \draw [color=uofgsandstone!60] (M5) -- (M6);
+            \draw [very thick] (M3) -- (M1);
+            \draw [color=uofgsandstone!60] (M6) -- (M7);
+            \draw [very thick] (M7) -- (M8);
+            \draw [very thick] (M8) -- (M9);
+        \end{scope}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Maximum Common Induced Connected Subgraph}
+    \centering
+    \begin{tikzpicture}
+        \begin{scope}
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M1) at (90:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M2) at (150:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M3) at (30:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M4) at (210:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M5) at (330:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M6) at (270:1.5) {\phantom{0}};
+            \node[draw, circle, draw=uofgsandstone!60, fill=white, inner sep=2pt, font=\normalsize] (M7) at ($(210:1.5) + (M6)$) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M8) at ($(330:1.5) + (M6)$) {\phantom{0}};
+            \node[draw, circle, draw=uofgsandstone!60, fill=white, inner sep=2pt, font=\normalsize] (M9) at ($(270:1.5) + (M6)$) {\phantom{0}};
+
+            \draw [very thick] (M1) -- (M2);
+            \draw [very thick] (M2) -- (M4);
+            \draw [very thick] (M3) -- (M5);
+            \draw [very thick] (M4) -- (M6);
+            \draw [very thick] (M5) -- (M6);
+            \draw [very thick] (M3) -- (M1);
+            \draw [color=uofgsandstone!60] (M6) -- (M7);
+            \draw [very thick] (M6) -- (M8);
+            \draw [color=uofgsandstone!60] (M6) -- (M9);
+            \draw [color=uofgsandstone!60] (M7) -- (M9);
+            \draw [color=uofgsandstone!60] (M8) -- (M9);
+        \end{scope}
+
+        \begin{scope}[xshift=6cm]
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M1) at (90:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M2) at (150:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M3) at (30:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M4) at (210:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M5) at (330:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M6) at (270:1.5) {\phantom{0}};
+            \node[draw, circle, fill=uofglawn, inner sep=2pt, font=\normalsize] (M7) at ($(210:1.5) + (M6)$) {\phantom{0}};
+            \node[draw, circle, draw=uofgsandstone!60, fill=white, inner sep=2pt, font=\normalsize] (M8) at ($(270:1.5) + (M6)$) {\phantom{0}};
+            \node[draw, circle, draw=uofgsandstone!60, fill=white, inner sep=2pt, font=\normalsize] (M9) at ($(330:1.5) + (M8)$) {\phantom{0}};
+
+            \draw [very thick] (M1) -- (M2);
+            \draw [very thick] (M2) -- (M4);
+            \draw [very thick] (M3) -- (M5);
+            \draw [very thick] (M4) -- (M6);
+            \draw [very thick] (M5) -- (M6);
+            \draw [very thick] (M3) -- (M1);
+            \draw [very thick] (M6) -- (M7);
+            \draw [draw=uofgsandstone!60] (M7) -- (M8);
+            \draw [draw=uofgsandstone!60] (M8) -- (M9);
+        \end{scope}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Maximum Clique}
+    \centering
+    \begin{tikzpicture}
+        \newcount \myc
+        \foreach \n in {1, ..., 9}{
+            \myc=\n \advance\myc by -1 \multiply\myc by -360 \divide\myc by 9 \advance\myc by 290.0
+            \ifthenelse{\n = 3 \OR \n = 6 \OR \n = 9}{
+                \node[draw, circle, fill=uofgcobalt, inner sep=0.5pt] (N\n) at (\the\myc:2.2) {\phantom{0}};
+            }{
+                \node[draw, circle, fill=white, inner sep=0.5pt] (N\n) at (\the\myc:2.2) {\phantom{0}};
+            }
+        }
+        \node[draw, circle, fill=uofgcobalt, inner sep=0.5pt] (N10) at (0, 0) {\phantom{0}};
+
+        \draw (N1) -- (N2);
+        \draw (N2) -- (N3);
+        \draw (N3) -- (N4);
+        \draw (N4) -- (N5);
+        \draw (N5) -- (N6);
+        \draw (N6) -- (N7);
+        \draw (N7) -- (N8);
+        \draw (N8) -- (N9);
+        \draw (N9) -- (N1);
+
+        \draw (N4) to [out=10, in=170] (N8);
+        \draw (N2) to [out=50, in=250] (N7);
+        \draw (N5) to [out=290, in=130] (N1);
+
+        \draw [ultra thick] (N3) -- (N10);
+        \draw [ultra thick] (N6) -- (N10);
+        \draw [ultra thick] (N9) -- (N10);
+        \draw [ultra thick] (N6) -- (N3);
+        \draw [ultra thick] (N9) -- (N3);
+        \draw [ultra thick] (N6) -- (N9);
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Who Cares?}
     \begin{itemize}
-        \item Recursively build up a mapping from vertices of the pattern graph to vertices of the
-            target graph.
-        \item In constraint programming terms:
+        \item Chemistry, biochemistry, and drug design (graphs are molecule fragments or proteins).
+        \item Computer vision.
+        \item Compilers (instruction generation, code rewriting).
+        \item Plagiarism and malware detection.
+        \item Livestock epidemiology (contact and trade graphs).
+        \item Designing mechanical lock systems.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{In Theory\ldots}
+    \begin{itemize}
+        \item Subgraph finding is hard.
+        \item Subgraph counting is hard.
+        \item Approximate subgraph finding is hard.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{In Practice\ldots}
+    \begin{itemize}
+        \item We have good \emph{solvers} for subgraph problems.
+        \item Some applications involve solving thousands of subgraph isomorphism queries per second.
+        \item We can solve clique on larger graphs than we can solve all-pairs
+            shortest path.\footnote{Terms and conditions apply.}
+        \item<2-> Maximum common subgraph is still a nightmare\ldots
+    \end{itemize}
+\end{frame}
+
+\section{Subgraph Finding in CP}
+
+\begin{frame}{Subgraph Isomorphism, as a Constraint Program}
+    \begin{itemize}
+        \item A variable for each pattern vertex. The domains are all of the target vertices.
+        \item At least two sets of constraints:
             \begin{itemize}
-                \item Forward-checking recursive search.
-                \item A variable for every pattern vertex.
-                \item Initially, each domain contains every target vertex.
-                \item After guessed assignments, infeasible values are eliminated from domains.
-                    \begin{itemize}
-                        \item All-different constraint.
-                        \item Adjacency constraints.
-                    \end{itemize}
-                \item If we get a wipeout, we backtrack.
+                \item Adjacent pairs of vertices must be mapped to adjacent pairs of vertices.
+                \item All different.
+            \end{itemize}
+        \item Then we get clever:
+            \begin{itemize}
+                \item Extra constraints about degrees, paths, \ldots
+                \item Better data structures and propagation queues.
+                \item Very good variable- and value-ordering heuristics.
             \end{itemize}
     \end{itemize}
 \end{frame}
 
-\begin{frame}{But wait! There's more!}
+\begin{frame}{The Glasgow Subgraph Solver}
+    \begin{center}
+        \url{https://github.com/ciaranm/glasgow-subgraph-solver}
+    \end{center}
+
     \begin{itemize}
-        \item Clever filtering at the top of search using neighbourhood degree sequences and paths,
-            to reduce the initial values of domains.
-        \item Pre-computed path count constraints, propagated like adjacency constraints during
-            search.
-        \item Bit-parallel implementation.
+        \item A CP style solver specifically for subgraph algorithms.
+        \item Subgraph isomorphism, and all its variants (induced / non-induced, homomorphism,
+            locally injective, labels, side constraints, directed, \ldots).
+        \item Also special algorithms for clique.
+        \item Guaranteed no bugs!
             \begin{itemize}
-                \item Weaker than the usual all-different propagator, but much faster.
+                \item<2-> Or at least, any buggy output will always be detected, if you enable proof
+                    logging.
             \end{itemize}
     \end{itemize}
 \end{frame}
 
 \begin{frame}{Benchmark Instances}
-
     \begin{itemize}
         \item 14,621 instances from Christine Solnon's collection:
             \begin{itemize}
@@ -286,20 +501,32 @@ Prosser and \\ James Trimble}
             \end{itemize}
         \item At least\ldots
             \begin{itemize}
-                \item $\ge 2,110$ satisfiable.
-                \item $\ge 12,322$ unsatisfiable.
+                \item $\ge$ 2,110 satisfiable.
+                \item $\ge$ 12,322 unsatisfiable.
             \end{itemize}
         \item A lot of them are very easy for good algorithms.
     \end{itemize}
+\end{frame}
 
+\begin{frame}{Hardware}
+    \begin{itemize}
+        \item HPC, optimised for throughput not reproducibility.\footnote{This work used the Cirrus
+            UK National Tier-2 HPC Service at EPCC (http://www.cirrus.ac.uk) funded by the
+            University of Edinburgh and EPSRC (EP/P020267/1)}
+        \item Dual Intel Xeon E5-2695 v4 CPUs, $2 \times 18$ cores
+        \item 256GBytes RAM
+        \item GCC 7.2.0
+        \item C++ native threads, SGI MPT MPI
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{Is It Any Good?}
 
     \includegraphics<1>{gen-graph-others.pdf}%
-    \includegraphics<2>{gen-graph-others-zoom-spoiler-all.pdf}
 
 \end{frame}
+
+\section{Search}
 
 \begin{frame}{Search Order}
     \begin{itemize}
@@ -323,148 +550,395 @@ Prosser and \\ James Trimble}
 \end{frame}
 
 \begin{frame}{Sanity Check}
-
-    \includegraphics<1>{gen-graph-value-ordering-heuristics.pdf}%
-    \includegraphics<2>{gen-graph-value-ordering-heuristics-unsat.pdf}%
-
+    \includegraphics<1>{gen-graph-value-ordering.pdf}
+    \includegraphics<2>{gen-graph-value-ordering-unsat.pdf}
 \end{frame}
 
-\begin{frame}{Phase Transitions}
-    \centering
-    \begin{tikzpicture}[every node/.style={inner sep=0pt, outer sep=0pt, column sep=10pt}, ampersand replacement=\&]
-        \matrix {
-            \node [anchor=center] {}; \&
-            \node [anchor=center] {\tiny $G(10, x) \rightarrowtail G(150, y)$}; \&
-            \node [anchor=center] {\tiny $G(20, x) \rightarrowtail G(150, y)$}; \&
-            \node [anchor=center] {\tiny $G(30, x) \rightarrowtail G(150, y)$}; \&
-            \\[0.1cm]
-            \node [anchor=center, inner sep=2pt] [rotate=90] {\tiny Satisfiable?}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-10-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-20-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-30-150.pdf}}; \&
-            \\[0.2cm]
-            \node [anchor=center, inner sep=2pt] [rotate=90] {\tiny Difficulty}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-10-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-30-150.pdf}}; \&
-            \\
-        };
-    \end{tikzpicture}
-\end{frame}
-
-\begin{frame}{Incidentally, Induced is Much More Complicated}
-    \centering
-    \begin{tikzpicture}[every node/.style={inner sep=0pt, outer sep=0pt, column sep=6pt}, ampersand replacement=\&]
-        \matrix {
-            \node [anchor=center] {\tiny $G(10, x) \hookrightarrow G(150, y)$}; \&
-            \node [anchor=center] {\tiny $G(14, x) \hookrightarrow G(150, y)$}; \&
-            \node [anchor=center] {\tiny $G(16, x) \hookrightarrow G(150, y)$}; \&
-            \node [anchor=center] {\tiny $G(20, x) \hookrightarrow G(150, y)$}; \&
-            \\[0.1cm]
-            \node [anchor=center] {\includegraphics{gen-graph-induced-satisfiable-10-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-induced-satisfiable-14-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-induced-satisfiable-16-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-induced-satisfiable-20-150.pdf}}; \&
-            \\[0.2cm]
-            \node [anchor=center] {\includegraphics{gen-graph-induced-nodes-10-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-induced-nodes-14-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-induced-nodes-16-150.pdf}}; \&
-            \node [anchor=center] {\includegraphics{gen-graph-induced-nodes-20-150.pdf}}; \&
-            \\
-        };
-    \end{tikzpicture}
+\begin{frame}{Back to Value-Ordering Heuristics}
+    \begin{itemize}
+        \item Largest target degree first.
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{However\ldots}
     \begin{itemize}
-        \item Degree spread is low.
-        \item We commit extremely heavily to the first branching choice, which is probably wrong.
+        \item What if several vertices have the same degree?
+        \item Is a vertex of degree $10$ really that much better than a vertex of degree $9$?
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Restarts}
+\begin{frame}{Discrepancy Search?}
+    \begin{center}
+        \includegraphics<1>{gen-graph-value-ordering-dds.pdf}%
+        \includegraphics<2>{gen-graph-value-ordering-dds-unsat.pdf}%
+        \includegraphics<3>{gen-graph-value-ordering-dds-scatter.pdf}
+    \end{center}
+\end{frame}
 
+\begin{frame}{Random Search with Restarts and Nogood Recording}
+    \only<1>{\begin{itemize}
+        \item Back to the random value-ordering heuristic.
+        \item Aggressive restarts: every 100ms.
+        \item Nogood recording and 2WL to avoid repeating work.
+    \end{itemize}}\only<2->{
+    \begin{center}
+        \includegraphics<2>{gen-graph-rsr.pdf}%
+        \includegraphics<3>{gen-graph-rsr-scatter.pdf}%
+    \end{center}}
+\end{frame}
+
+
+\begin{frame}{Value-Ordering Heuristics as Distributions}
+    \begin{itemize}
+        \item Traditional view: value-ordering defines a search order.
+        \item New view: value-ordering defines \textcolor{uofgcobalt}{what proportion of the search
+            effort} should be spent on different subproblems.
+        \item According to people who know more statistics than me, if solutions are uniformly
+            distributed, then random search with restarts should be better than DFS.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{A Slightly Random Value-Ordering Heuristic}
     \only<1>{
     \begin{itemize}
-        \item Run search for a bit, and if we don't find a solution, restart.
-        \item Count number of backtracks, restart using the Luby sequence (with a magic constant
-            multiplier).
-            \begin{itemize}
-                \item 1, 1, 2, 1, 1, 2, 4, 1, 1, 2, 1, 1, 2, 4, 8, \ldots
-            \end{itemize}
-        \item Obviously, something needs to change when we restart.
-            \begin{itemize}
-                \item First attempt: random value-ordering heuristic.
-            \end{itemize}
-    \end{itemize}
-    }%
-    \includegraphics<2>{gen-graph-random-restarts-goods.pdf}%
-    \includegraphics<3>{gen-graph-scatter-random-goods.pdf}
-
+        \item For a fixed domain $D_v$, pick a vertex $v'$ from a domain $D_v$ with probability
+    \[ p(v') = \frac{2^{\deg(v')}}{\sum_{w \in D_v}{2^{\deg(w)}}} \]
+        \item Equally likely to pick between two vertices of degree $d$.
+        \item Twice as likely to select a vertex of degree $d$ than a vertex of degree $d - 1$.
+        \item Justification: \textcolor{uofgcobalt}{solution density} and expected distribution of solutions.
+    \end{itemize}}\only<2>{
+    \begin{center}
+        \includegraphics<2>{gen-graph-bias-scatter.pdf}%
+    \end{center}}
 \end{frame}
 
-\begin{frame}{Nogoods}
+\begin{frame}{Is It Better?}
+    \begin{center}
+        \includegraphics<1>{gen-graph-sbs-scatter.pdf}%
+        \includegraphics<2>{gen-graph-sbs.pdf}%
+    \end{center}
+\end{frame}
 
-    \only<1>{
+\begin{frame}{Parallel Search}
     \begin{itemize}
-        \item Whenever we restart, post new constraints eliminating parts of the search space
-            already explored.
-        \item Potentially exponentially many constraints.
-        \item But they are all in the form \[ (d_1 = v_1) \wedge (d_2 = v_2) \wedge \ldots \wedge (d_n =
-            v_n) \rightarrow \bot \textnormal{.}\]
-        \item Use two watched literals to propagate in $O(1)$ish time.
-            \begin{itemize}
-                \item Basic idea: clauses only propagate when exactly one $(d_i = v_i)$ literal has
-                    not been set to true.
-                \item Watch \emph{two} literals per clause that have not been set to true.
-                \item When unit propagating, only look at clauses with a watch corresponding to the
-                    assignment made.
-                \item Either find a new literal to watch, or propagate.
-            \end{itemize}
+        \item Each thread gets its own random seed.
+        \item Barrier synchronise on restarts.
+        \item Share nogoods.
     \end{itemize}
-}%
-    \includegraphics<2>{gen-graph-random-restarts.pdf}%
-    \includegraphics<3>{gen-graph-scatter-random.pdf}
-
 \end{frame}
 
-\begin{frame}{Biased Value-Ordering}
+\begin{frame}{Is It Even Betterer?}
+    \includegraphics<1>{gen-graph-par-scatter.pdf}%
+    \includegraphics<2>{gen-graph-par.pdf}%
+    \includegraphics<3>{gen-graph-dist.pdf}%
+\end{frame}
 
-    \only<1>{
+\section{``Hard''?}
+%%% 
+%%% \begin{frame}{Is Clique-Finding Hard?}
+%%%     \centering
+%%%     \begin{tikzpicture}
+%%%         \newcount \myc
+%%%         \foreach \n in {1, ..., 9}{
+%%%             \myc=\n \advance\myc by -1 \multiply\myc by -360 \divide\myc by 9 \advance\myc by 290.0
+%%%             \node[draw, circle, fill=uofgcobalt, inner sep=0.5pt] (N\n) at (\the\myc:2.2) {\phantom{0}};
+%%%         }
+%%% 
+%%%         \draw <1-2> (N1) -- (N2);
+%%%         \draw <2> (N1) -- (N2);
+%%%         \draw <2> (N1) -- (N3);
+%%%         \draw <1-2> (N1) -- (N4);
+%%%         \draw <2> (N1) -- (N5);
+%%%         \draw <2> (N1) -- (N6);
+%%%         \draw <2> (N1) -- (N7);
+%%%         \draw <2> (N1) -- (N8);
+%%%         \draw <2> (N1) -- (N9);
+%%%         \draw <2> (N2) -- (N3);
+%%%         \draw <2> (N2) -- (N4);
+%%%         \draw <2> (N2) -- (N5);
+%%%         \draw <1-2> (N2) -- (N6);
+%%%         \draw <2> (N2) -- (N7);
+%%%         \draw <2> (N2) -- (N8);
+%%%         \draw <2> (N2) -- (N9);
+%%%         \draw <2> (N3) -- (N4);
+%%%         \draw <1-2> (N3) -- (N5);
+%%%         \draw <2> (N3) -- (N6);
+%%%         \draw <2> (N3) -- (N7);
+%%%         \draw <2> (N3) -- (N8);
+%%%         \draw <2> (N3) -- (N9);
+%%%         \draw <2> (N4) -- (N5);
+%%%         \draw <2> (N4) -- (N6);
+%%%         \draw <2> (N4) -- (N7);
+%%%         \draw <2> (N4) -- (N8);
+%%%         \draw <2> (N4) -- (N9);
+%%%         \draw <2> (N5) -- (N6);
+%%%         \draw <2> (N5) -- (N7);
+%%%         \draw <2> (N5) -- (N8);
+%%%         \draw <2> (N5) -- (N9);
+%%%         \draw <2> (N6) -- (N9);
+%%%         \draw <1-2> (N7) -- (N8);
+%%%         \draw <2> (N8) -- (N9);
+%%% 
+%%%         \draw <3> (N1) -- (N2);
+%%%         \draw <3> (N1) -- (N4);
+%%%         \draw <3> (N1) -- (N6);
+%%%         \draw <3> (N1) -- (N7);
+%%%         \draw <3> (N1) -- (N8);
+%%%         \draw <3> (N1) -- (N9);
+%%%         \draw <3> (N2) -- (N7);
+%%%         \draw <3> (N2) -- (N9);
+%%%         \draw <3> (N3) -- (N4);
+%%%         \draw <3> (N3) -- (N5);
+%%%         \draw <3> (N3) -- (N8);
+%%%         \draw <3> (N4) -- (N5);
+%%%         \draw <3> (N4) -- (N6);
+%%%         \draw <3> (N5) -- (N8);
+%%%         \draw <3> (N6) -- (N7);
+%%%         \draw <3> (N8) -- (N9);
+%%%     \end{tikzpicture}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}{Cliques in Random Graphs}
+%%%     \centering\includegraphics{gen-graph-phase-transition.pdf}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}{Intuition}
+%%%     \begin{itemize}
+%%%         \item High density means lots of occurrences, so wherever we look, it's easy to find one of
+%%%             them.\footnote{This statement is technically a massive lie.}
+%%%         \item Low density means no occurrences, and we can quickly show we run out of edges after
+%%%             doing a bit of branching.
+%%%         \item If we expect there to be just one solution, it's really hard to find it if it
+%%%             exists, and really hard to rule it out if it doesn't exist.
+%%%     \end{itemize}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}{Optimisation?}
+%%%     \centering\includegraphics{gen-graph-waves.pdf}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}[t]{Subgraph Isomorphism in Random Graphs}
+%%%     \begin{tikzpicture}[every node/.style={inner sep=0pt, outer sep=0pt, column sep=10pt}, ampersand replacement=\&]
+%%%             \matrix {
+%%%                 \node [anchor=center] {}; \&
+%%%             \node [anchor=center] {\tiny $G(10, x) \rightarrowtail G(150, y)$}; \&
+%%%             \node [anchor=center] {\tiny $G(20, x) \rightarrowtail G(150, y)$}; \&
+%%%             \node [anchor=center] {\tiny $G(30, x) \rightarrowtail G(150, y)$}; \&
+%%%             \\[0.1cm]
+%%%             \node [anchor=center, inner sep=2pt] [rotate=90] {\tiny Satisfiable?}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-10-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-20-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-30-150.pdf}}; \&
+%%%             \\[0.2cm]
+%%%             \node [anchor=center, inner sep=2pt] [rotate=90] {\tiny Search cost}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-10-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-30-150.pdf}}; \&
+%%%             \\
+%%%         };
+%%%     \end{tikzpicture}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}[t]{Labelled Graphs}
+%%%     \begin{tikzpicture}[every node/.style={inner sep=0pt, outer sep=0pt, column sep=6pt}, ampersand replacement=\&]
+%%%         \matrix {
+%%%             \node [anchor=center] {}; \&
+%%%             \node [anchor=center] {\tiny $G(20, x, 1) \hookrightarrow G(150, y, 1)$}; \&
+%%%             \node [anchor=center] {\tiny $G(20, x, 2) \hookrightarrow G(150, y, 2)$}; \&
+%%%             \node [anchor=center] {\tiny $G(20, x, 5) \hookrightarrow G(150, y, 5)$}; \&
+%%%             \node [anchor=center] {\tiny $G(20, x, 20) \hookrightarrow G(150, y, 20)$}; \&
+%%%             \\[0.1cm]
+%%%                 \node [anchor=center, inner sep=2pt] [rotate=90] {\tiny Satisfiable?}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-20-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-20-l2-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-20-l5-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-satisfiable-20-l20-150.pdf}}; \&
+%%%             \\[0.2cm]
+%%%                 \node [anchor=center, inner sep=2pt] [rotate=90] {\tiny Search cost}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-l2-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-l5-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-l20-150.pdf}}; \&
+%%%             \\
+%%%         };
+%%%     \end{tikzpicture}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}{Graph Databases}
+%%%     \begin{itemize}
+%%%         \item Lots of labelled target graphs, more or less a fixed set.
+%%%         \item Patterns are presented in real time.
+%%%         \item Return every target graph that contains the pattern.
+%%%     \end{itemize}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}{Filter / Verify}
+%%%     \only<1>{
+%%%         \begin{itemize}
+%%%             \item A widely used technique in graph databases.
+%%%             \item NP-complete means subgraph isomorphism is slow. So why not avoid calling a subgraph
+%%%                 isomorphism algorithm whenever possible?
+%%%             \item Detect ``features'' of graphs:
+%%%                 \begin{itemize}
+%%%                     \item Number of times particular labels occur.
+%%%                     \item Whether or not certain small shapes occur.
+%%%                     \item Whether vertices of at least a particular degree exist.
+%%%                 \end{itemize}
+%%%             \item Only call a subgraph isomorphism algorithm on instances where the features match.
+%%%         \end{itemize}
+%%%     }\only<2>{
+%%%         \begin{equation*}T =
+%%%         T_{\mathit{search}} + \left|C_q\right| \cdot T_{\mathit{iso\_test}}\end{equation*}
+%%% 
+%%%     \begin{displayquote}``Graph indexing plays a critical role at efficient
+%%%         query processing in graph databases''\footnote{See McCreesh
+%%%     et al., JAIR 61(2018) for references}\end{displayquote}
+%%% }\only<3>{
+%%%     \begin{equation*}
+%%%         T_{\mathit{search}} + \left|C_q\right| \cdot (T_{\mathit{io}} + T_{\mathit{iso\_test}})
+%%%     \end{equation*}
+%%% 
+%%%         \begin{displayquote}``the value of $T_{\mathit{iso\_test}}$ does
+%%%             not change much for a given query''\footnote{See McCreesh
+%%%         et al., JAIR 61(2018) for references}\end{displayquote}
+%%%     }\only<4>{
+%%%         \begin{displayquote}``Sequential scan is very costly
+%%%             because one has to not only access the whole graph database but also check subgraph isomorphism. It
+%%%             is known that subgraph isomorphism is an \NP-complete problem. Clearly, it is necessary to build
+%%%             graph indices in order to help processing graph queries.''\footnote{See McCreesh
+%%%         et al., JAIR 61(2018) for references}\end{displayquote}
+%%%     }\only<5>{
+%%%         \begin{displayquote}``obviously it is
+%%%             inefficient to perform a sequential scan on every graph in the database, because the subgraph
+%%%             isomorphism test is expensive''\footnote{See McCreesh
+%%%         et al., JAIR 61(2018) for references}\end{displayquote}
+%%%     }\only<6>{
+%%%         \begin{displayquote}``the graph query problem is hard in that \ldots it requires
+%%%             subgraph isomorphism checking \ldots which has proven to be \NP-complete''
+%%%         \end{displayquote}
+%%%         \begin{displayquote} working with large networks is hard or impossible ``due to the lack of
+%%%             scalable graph indexing mechanisms''\footnote{See McCreesh et al., JAIR 61(2018) for
+%%%         references}\end{displayquote}
+%%%     }
+%%% \end{frame}
+%%% 
+%%% \begin{frame}{Connectivity Algorithms are Really Stupid}
+%%%     \centering
+%%%     \only<2>{\begin{tikzpicture}[scale=0.5,every node/.style={font=\footnotesize}]
+%%%         \begin{scope}
+%%%             \newcount \myc
+%%%             \newcount \myd
+%%%             \newcount \mye
+%%%             \foreach \n in {1, ..., 8}{
+%%%                 \myc=\n \advance\myc by -1 \multiply\myc by -360 \divide\myc by 10 \advance\myc by 18.0
+%%%                 \node[draw, circle, fill=uofgcobalt, inner sep=0.5pt] (N\n) at (\the\myc:2.4) {\phantom{0}};
+%%%             }
+%%%             \node[draw, circle, fill=uofgpillarbox, inner sep=0.5pt] (N9) at (90.0:2.4) {\phantom{0}};
+%%%             \node[draw, circle, fill=uofglawn, inner sep=0.5pt] (N10) at (54.0:2.4) {\phantom{0}};
+%%% 
+%%%             \foreach \n in {1, ..., 8}{
+%%%                 \myd=\n
+%%%                 \myc=\n \advance\myc by 1
+%%%                 \foreach \m in {\the\myc, ..., 9}{
+%%%                     \mye=\m
+%%%                     \draw (N\the\myd) -- (N\the\mye);
+%%%                 }
+%%%             }
+%%%         \end{scope}
+%%%         \begin{scope}[xshift=9cm]
+%%%             \newcount \myc
+%%%             \newcount \myd
+%%%             \newcount \mye
+%%%             \foreach \n in {1, ..., 8}{
+%%%                 \myc=\n \advance\myc by -1 \multiply\myc by -360 \divide\myc by 10 \advance\myc by 18.0
+%%%                 \node[draw, circle, fill=uofgcobalt, inner sep=0.5pt] (N\n) at (\the\myc:2.4) {\phantom{0}};
+%%%             }
+%%%             \node[draw, circle, fill=uofgpillarbox, inner sep=0.5pt] (N9) at (90.0:2.4) {\phantom{0}};
+%%%             \node[draw, circle, fill=uofgpumpkin, inner sep=0.5pt] (N10) at (54.0:2.4) {\phantom{0}};
+%%% 
+%%%             \foreach \n in {1, ..., 8}{
+%%%                 \myd=\n
+%%%                 \myc=\n \advance\myc by 1
+%%%                 \foreach \m in {\the\myc, ..., 9}{
+%%%                     \mye=\m
+%%%                     \draw (N\the\myd) -- (N\the\mye);
+%%%                 }
+%%%             }
+%%%         \end{scope}
+%%%     \end{tikzpicture}}\only<1>{\begin{tikzpicture}[every node/.style={inner sep=0pt, outer sep=0pt, column sep=6pt}, ampersand replacement=\&]
+%%%         \matrix {
+%%%             \node [anchor=center] {}; \&
+%%%             \node [anchor=center] {\tiny $G(20, x, 1) \hookrightarrow G(150, y, 1)$}; \&
+%%%             \node [anchor=center] {\tiny $G(20, x, 2) \hookrightarrow G(150, y, 2)$}; \&
+%%%             \node [anchor=center] {\tiny $G(20, x, 5) \hookrightarrow G(150, y, 5)$}; \&
+%%%             \node [anchor=center] {\tiny $G(20, x, 20) \hookrightarrow G(150, y, 20)$}; \&
+%%%             \\[0.1cm]
+%%%                 \node [anchor=center, inner sep=2pt] [rotate=90] {\tiny Glasgow}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-l2-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-l5-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-non-induced-nodes-20-l20-150.pdf}}; \&
+%%%             \\[0.1cm]
+%%%             \node [anchor=center, inner sep=2pt] [rotate=90] {\tiny VF2}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-vf2-non-induced-nodes-20-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-vf2-non-induced-nodes-20-l2-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-vf2-non-induced-nodes-20-l5-150.pdf}}; \&
+%%%             \node [anchor=center] {\includegraphics{gen-graph-vf2-non-induced-nodes-20-l20-150.pdf}}; \&
+%%%             \\
+%%%         };
+%%% \end{tikzpicture}}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}{Constraint Programming versus Connectivity}
+%%%     \begin{center}\includegraphics{gen-graph-biiiig-data-pcms.pdf}\end{center}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}{It's Not Just Graph Databases}
+%%%     \begin{displayquote}``There are (not so many) instances for which creation of a clear design is
+%%%         prohibitively slow in the current implementation that evaluates subgraph isomorphism with the
+%%%         VF2 algorithm \ldots Recent experiences with a few of these showed that the LAD algorithm was
+%%%     very fast in ruling out impossible matches, where VF2 took a long time.''\footnote{See McCreesh
+%%%     et al., JAIR 61(2018) for references}\end{displayquote}
+%%% \end{frame}
+%%% 
+%%% \begin{frame}{So What?}
+%%%     \begin{itemize}
+%%%         \item There's a lot more to hardness than worst-case complexity analysis.
+%%%         \item Understanding how algorithms behave is important.
+%%%         \item Maybe we should try doing some science?
+%%%     \end{itemize}
+%%% \end{frame}
+
+\section{Inference}
+
+\section{Proof Logging}
+
+\section{Conclusion}
+
+\begin{frame}{Can You Help?}
     \begin{itemize}
-        \item Select a vertex $v'$ from the chosen domain $D_v$ with
-            probability \[ p(v') = \frac{2^{\deg(v')}}{\sum_{w \in D_v}{2^{\deg(w)}}} \text{.} \]
-        \item Looks a lot like $\mathit{softmax}$, which uses base $e$.
+        \item Better search
+        \item Conflict analysis
+        \item Symmetries
+        \item Benchmark instances
+        \item Side constraints
+        \item Subgraph counting
     \end{itemize}
-    }%
-    \includegraphics<2>{gen-graph-value-ordering-heuristics-biased.pdf}%
-    \includegraphics<3>{gen-graph-scatter-biased.pdf}
-
 \end{frame}
 
-\begin{frame}{Biased Value-Ordering with Restarts and Nogoods}
-
-    \includegraphics<1>{gen-graph-restarts.pdf}%
-    \includegraphics<2>{gen-graph-scatter-final.pdf}
-
-\end{frame}
-
-\begin{frame}{Ongoing Work}
-
+\begin{frame}{Conclusion}
     \begin{itemize}
-        \item Is this form of search more broadly applicable?
-        \item Specialisations, like clique, and generalisations, like maximum common subgraph.
-        \item Parallelism.
-        \item Subgraphs modulo theories.
-        \item Algorithm engineering.
+        \item CP can help with designing other algorithms, too.
+        \item Subgraph isomorphism is a nice testbed for learning about CP, because it's just the
+            right amount of complicated.
     \end{itemize}
-
 \end{frame}
 
 {
     \usebackgroundtemplate{
         \tikz[overlay, remember picture]
-        \node[at=(current page.south), anchor=south, inner sep=0pt]{\includegraphics[keepaspectratio=true, width=\paperwidth]{background2.jpg}};
+        \node[at=(current page.south), anchor=south, inner
+        sep=0pt]{\includegraphics[keepaspectratio=true, width=\paperwidth]{background2.jpg}};
     }
 
     \begin{frame}[plain,noframenumbering]

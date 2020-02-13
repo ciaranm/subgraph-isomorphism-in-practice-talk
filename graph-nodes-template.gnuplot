@@ -8,9 +8,9 @@ set tics textcolor rgb "black"
 set label textcolor rgb "black"
 
 outputfile="gen-graph-" . format . "-nodes-" . ps . "-" . ts . ".tex"
-nodesfile="" . format . "-" . ps . "-" . ts . "-nodes.plot"
+nodesfile="data/" . format . "-" . ps . "-" . ts . "-nodes.plot"
 
-set terminal tikz standalone color size 2.3cm,2.3cm font '\tiny'
+set terminal tikz standalone color size 2.3cm,2.3cm font '\tiny' preamble '\usepackage{microtype}\RequirePackage[tt=false, type1=true]{libertine}\RequirePackage[varqu]{zi4}\RequirePackage[libertine]{newtxmath}\RequirePackage[T1]{fontenc}'
 
 load "chromasequencefromwhitetoblack.pal"
 
